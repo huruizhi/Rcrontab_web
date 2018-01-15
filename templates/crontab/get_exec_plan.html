@@ -1,0 +1,39 @@
+{% extends 'Base.html' %}
+
+{% block container %}
+    <table>
+    <tr>
+        <td>
+            <select name="owner" class="form-control" style="width:150px;">
+        {%  for owner in owner_list %}
+            <option>{{ owner.0 }}</option>
+        {% endfor %}
+    </select>
+        </td>
+        <td style="padding-left: 10px">
+            <input type="button" class="btn btn-primary" onclick="submit()" value="查询">
+        </td>
+    </tr>
+     </table>
+<div class="result"></div>
+
+<script src="/static/jquery-3.2.1.js"></script>
+<script>
+    var username
+    function submit() {
+        var Owner=$('select').val()
+        var data={'name': Owner }
+        username = Owner
+        $.ajax({
+                type:"post",
+                url:"/index/get_plan/",
+                data:{'func':'plan', 'data_list':JSON.stringify(data)},
+                success: function (arg) {
+                    $(".result").empty()
+                    $('.result').append(arg)
+                }
+            });
+    }
+</script>
+
+{% endblock %}

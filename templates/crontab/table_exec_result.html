@@ -1,0 +1,26 @@
+
+<table class="table">
+    <thead>
+    <tr>
+         <th>sid</th>
+         <th>开始时间</th>
+         <th>结束时间</th>
+         <th>结果代码</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in list %}
+        {% if row.3 == 1 %}
+            <tr class="warning">
+        {% elif row.3 == 0 %}
+            <tr>
+        {% else %}
+            <tr class="danger">
+        {% endif %}
+        {% for item in row %}
+            <td>{{ item }}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

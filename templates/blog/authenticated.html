@@ -1,0 +1,7 @@
+{% extends 'blog/../crontab/login.html' %}
+
+{% block block_login %}
+    {{ request.user }}
+
+    <div><a href="/blog/logout/">logout</a></div>
+{% endblock %}

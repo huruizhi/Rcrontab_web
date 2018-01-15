@@ -1,0 +1,10 @@
+{% extends 'blog/../crontab/login.html' %}
+
+{% block block_login %}
+    <form action="" method="post">
+    {{ form_login.username.label_tag }}{{ form_login.username }}<br>
+    {{ form_login.password.label_tag }}{{ form_login.password }}
+    <div>{{ err_info }}</div>
+    <input type="submit" value="Login">
+    </form>
+{% endblock %}

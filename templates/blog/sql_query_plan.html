@@ -1,0 +1,48 @@
+{% extends 'Base.html' %}
+{% block container %}
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>sid</th>
+        <th>parent_id</th>
+        <th>exec_time</th>
+        <th>server</th>
+        <th>path</th>
+    </tr>
+    {% for list in item_list%}
+        <tr>
+        {% for item in list %}
+            <td>{{ item }}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </thead>
+</table>
+
+<!--<div type="button"
+     style="width: 50px;height: 20px ;padding: 10px;
+     background-color: cornflowerblue;cursor: pointer;text-align: center;line-height: 20px;
+     " onclick="edit()">
+    修改
+</div>-->
+{% endblock %}
+<h1>我在这里</h1>
+<script>
+    function edit() {
+        var sid = $(":radio:checked").parent().next().text()
+        var data = {'func':'edit', 'sid':sid}
+        $.ajax({
+            type:"GET",
+            url:"",
+            data:data,
+            success:function (arg) {
+                $(".edit_bg").removeClass('hidden')
+                $(".edit_edit").removeClass('hidden')
+                $(".edit_edit").empty()
+                $(".edit_edit").append(arg)
+            }
+
+        })
+    }
+</script>

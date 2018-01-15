@@ -1,0 +1,118 @@
+
+<div>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>sid</th>
+        <th>父程序</th>
+        <th>执行时间</th>
+        <th>部署服务器</th>
+        <th>部署路径</th>
+        <th>程序功能</th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for list in item_list%}
+        <tr>
+        {% for item in list %}
+            <td>{{ item }}</td>
+        {% endfor %}
+        <td><input type="button" url="/index/edit_plan/{{ list.0 }}/" class="btn btn-info" value="修改"
+                   data-toggle="modal" data-target="#myModal" onclick="edit_plan(this)" ></td>
+        <td><input type="button" url="/index/rerun_program/{{ list.0 }}/" class="btn btn-primary" value="重跑"
+                   onclick="rerun_program(this)" ></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cancel()">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					修改执行计划
+				</h4>
+			</div>
+            <form action="" method="post" name="plan_info">
+			<div class="modal-body">
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancel()">关闭
+				</button>
+				<button type="button" class="btn btn-primary" onclick="submit_data()">
+					提交更改
+				</button>
+			</div>
+            </form>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+<script>
+    var global_path
+    function edit_plan(ths) {
+        var path = $(ths).attr('url')
+        global_path = path
+        $.ajax({
+            type:"GET",
+            url:path,
+            success:function (arg) {
+                $(".modal-body").empty()
+                $(".modal-body").append(arg)
+            }
+        })
+    }
+
+    function submit_data(){
+    var dict = $('form').serializeArray();
+    var m = {};
+    $.each(dict, function(i, line) {
+        m[line['name']] = line['value'] });
+    $.ajax({
+        type:"POST",
+            url:global_path,
+            data:m,
+            success:function (arg) {
+                if(arg=="OK"){
+                    alert('数据修改成功')
+                    window.location.reload();
+                }
+                else if(arg=='NoChange'){
+                    alert('数据未发生修改')
+                }
+                else {
+                    $(".modal-body").empty()
+                    $(".modal-body").append(arg)
+                }
+
+            }
+        });
+  }
+
+  function rerun_program(ths) {
+        var path = $(ths).attr('url')
+        $.ajax({
+            type:'GET',
+            url:path,
+            success:function (arg) {
+                console.log(arg)
+                if(arg == "OK") {
+                    alert('程序重跑提交成功！')
+                }
+            }
+        })
+  }
+
+  function cancel() {
+      $(".modal-body").empty()
+  }
+</script>

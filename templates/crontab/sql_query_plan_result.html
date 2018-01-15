@@ -1,0 +1,126 @@
+<table class="table table-striped">
+    <thead>
+         <th>sid</th>
+         <th>脚本名称</th>
+         <th>开始时间</th>
+         <th>结束时间</th>
+         <th>结果代码</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for list in item_list%}
+        {% if list.4 == 100 %}
+            <tr class="warning">
+        {% elif list.4 == 0 %}
+            <tr>
+        {% else %}
+            <tr class="danger">
+        {% endif %}
+        {% for item in list %}
+            {% if forloop.counter == 1 %}
+             <td><a data-toggle="modal" data-target="#myModal" url="/index/exec_log/{{ item }}/"
+                    onclick="exec_log(this)">{{ item }}</a></td>
+            {% else %}
+                <td>{{ item }}</td>
+            {% endif %}
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<!--  分页  -->
+{% if contacts.paginator.num_pages > 1 %}
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+      {% if contacts.has_previous %}
+            <li>
+            <a page="{{ contacts.previous_page_number  }}" user="{{ name }}" onclick="get_page(this)">
+                <span aria-hidden="true">&laquo;</span></a>
+            </li>
+          {% else %}
+          <li class="disabled">
+         <span>
+            <span aria-hidden="true">&laquo;</span>
+         </span>
+        </li>
+        {% endif %}
+
+  {% for page_num in page_range %}
+      {% if page_num == contacts.number %}
+           <li class="active">
+      <span>{{ page_num }}</span>
+        </li>
+      {% else %}
+    <li><a page="{{ page_num }}"  user="{{ name }}" onclick="get_page(this)">{{ page_num }}</a></li>
+      {% endif %}
+  {% endfor %}
+
+
+    {% if contacts.has_next %}
+    <li>
+        <a page="{{ contacts.next_page_number }}"  user="{{ name }}" onclick="get_page(this)"  aria-label="Next">
+            <span aria-hidden="true">&raquo;</span></a>
+    </li>
+    {% else %}
+    <li class="disabled">
+        <span>
+        <span aria-hidden="true">&raquo;</span>
+        </span>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="cancel()">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					程序运行情况
+				</h4>
+			</div>
+            <form action="" method="post" name="plan_info">
+			<div class="modal-body">
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancel()">关闭
+				</button>
+			</div>
+            </form>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+<script>
+    function exec_log(ths){
+        var path = $(ths).attr('url');
+        $.ajax({
+            type:"get",
+            url:path,
+            success:function (arg) {
+                $(".modal-body").empty()
+                $(".modal-body").append(arg)
+            }
+        })
+    }
+
+    function get_page(ths) {
+        var page = $(ths).attr('page')
+        var name = $(ths).attr('user')
+        console.log(page, name)
+        $.ajax({
+            type:"get",
+            url:"",
+            data:{'page':page, 'name':name},
+            success:function (arg) {
+                $(".result").empty()
+                $(".result").append(arg)
+            }
+        })
+    }
+
+</script>
