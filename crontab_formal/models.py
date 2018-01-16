@@ -8,7 +8,7 @@ class ServerInfo(models.Model):
     ip = models.GenericIPAddressField(protocol='IPv4')
     name = models.CharField(max_length=100)
     uptime = models.DateTimeField(auto_now=True)
-    status = models.IntegerField(choices=is_alive)
+    status = models.IntegerField(choices=is_alive, default=0)
 
     def __str__(self):
         return 'IP:%s, is_alive:%s' % (self.ip, self.status)
@@ -17,6 +17,9 @@ class ServerInfo(models.Model):
 class Path(models.Model):
     server = models.ForeignKey('ServerInfo', on_delete=models.DO_NOTHING)
     path = models.CharField(max_length=200)
+
+    def __str__(self):
+        return "%s:%s" % (self.server, self.path)
 
 
 class TablesInfo(models.Model):
@@ -45,6 +48,20 @@ class PyScriptBaseInfoNew(models.Model):
     owner = models.ForeignKey(rmodels.PyScriptOwnerList, models.DO_NOTHING, related_name='programs')
     is_stop = models.IntegerField(default=0, choices=is_stop_choice)
 
+    def __str__(self):
+        return "sid:%s server:%s script_name:%s " % (self.sid, self.deploy_directory, self.name)
+
+
+class ResultLog(models.Model):
+    script = models.ForeignKey('PyScriptBaseInfoNew', models.DO_NOTHING, related_name='result')
+    version = models.DateField()
+    start_time = models.DateTimeField()
+    is_normal = models.IntegerField()
+    err_info = models.CharField(max_length=255, blank=True, null=True)
+    end_time = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return self.script, self.start_time
 
 
 
