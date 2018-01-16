@@ -1,3 +1,4 @@
+{% load menu %}
 <!DOCTYPE html>
 <!-- saved from url=(0042)https://v3.bootcss.com/examples/dashboard/ -->
 <html lang="zh-CN">
@@ -60,6 +61,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
+              {% menu_list as modules_list %}
               {% for int, modules in modules_list.items %}
                   <ul class="nav nav-sidebar">
               {% for module in modules %}

@@ -10,10 +10,6 @@ import json
 from rcrontab import models, forms
 
 # Create your views here.
-modules_list = {0: ({'id': 0, 'name': 'overview', 'desc': "概览"}, {'id': 1, 'name': "get_plan", 'desc': "执行计划"},
-                {'id': 2, 'name': 'get_result', 'desc': "执行结果"}),
-                1: ({'id': 3, 'name': 'insert_plan', 'desc': "添加执行计划"}, )}
-
 
 def do_login(request):
     if request.method == 'POST':
@@ -81,7 +77,7 @@ class InIndex:
             active_module = {'id': 1, 'name': "get_plan", 'desc': "执行计划"}
             return render(self.r, 'crontab/get_exec_plan.html',
                           {'owner_list': owners, 'user_name': self.user,
-                           'modules_list': modules_list, 'active_module': active_module})
+                           'active_module': active_module})
 
     def _insert_plan(self):
         active_module = {'id': 3, 'name': 'insert_plan', 'desc': "添加执行计划"}
@@ -96,7 +92,6 @@ class InIndex:
                 form = forms.EditExec()
 
         return render(self.r, 'crontab/insert.html', {'form': form, 'user_name': self.user,
-                                                      'modules_list': modules_list,
                                                       'active_module': active_module, 'errs': form.errors})
 
     def _exec_result(self):
@@ -109,7 +104,7 @@ class InIndex:
                 active_module = {'id': 2, 'name': 'get_result', 'desc': "执行结果"}
                 return render(self.r, 'crontab/get_exec_result.html',
                               {'owner_list': owners, 'user_name': self.user,
-                               'modules_list': modules_list, 'active_module': active_module})
+                               'active_module': active_module})
 
             else:
                 user = self.r.GET['name']
