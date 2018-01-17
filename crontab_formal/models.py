@@ -39,23 +39,30 @@ class TablesInfo(models.Model):
 
     class Mate:
         db_table = 'py_script_tables_info'
+        unique_together = ('db_server', 'db_name', 'table_name')
 
 
 class PyScriptBaseInfoNew(models.Model):
     exec_plan_choice = ((1, 'day'),
                         (2, 'month'),
                         (3, 'quarter'))
+
     is_stop_choice = ((0, '执行'),
                       (1, '停止'))
 
     is_test = ((0, '正式'),
                (1, '测试'))
+
+    run_type = ((0, '调用api'),
+                (1, '调用程序'))
+
     sid = models.AutoField(primary_key=True)
     version = models.DateField()
+    run_type = models.SmallIntegerField(choices=run_type, default=0)
     pre_tables = models.ManyToManyField('TablesInfo', related_name='son_program')
     result_tables = models.ManyToManyField('TablesInfo', related_name='father_program')
-    name = models.CharField(verbose_name='脚本名称', max_length=50)
-    deploy_directory = models.ForeignKey('Path', on_delete=models.DO_NOTHING)
+    name = models.CharField(verbose_name='名称', max_length=50)
+    path = models.ForeignKey('Path', on_delete=models.DO_NOTHING, related_name='program')
     function = models.CharField(verbose_name='程序功能', max_length=50)
     exec_plan = models.IntegerField(verbose_name='执行计划', choices=exec_plan_choice, blank=True, null=True)
     exec_month = models.IntegerField(blank=True, null=True)
@@ -66,7 +73,7 @@ class PyScriptBaseInfoNew(models.Model):
     is_test = models.IntegerField(default=0, choices=is_test)
 
     def __str__(self):
-        return "sid:%s server:%s script_name:%s " % (self.sid, self.deploy_directory, self.name)
+        return "sid:%s server:%s script_name:%s " % (self.sid, self.path, self.name)
 
     class Meta:
         db_table = 'py_script_base_info_v2'
