@@ -33,6 +33,7 @@ def index(request, mode='index', sid=None):
     if not hasattr(in_index, mode):
         mode = 'index'
     func = getattr(in_index, mode)
+    print(mode)
     resp = func()
     return resp
 

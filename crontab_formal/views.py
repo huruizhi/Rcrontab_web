@@ -6,6 +6,6 @@ from . import forms
 def insert(request):
     form = forms.ScriptBaseInfo()
     if request.method == 'GET':
-        return render(request, 'rcrontab_formals', {'form': forms})
+        return render(request, 'rcrontab_formals/insert.html', {'form': form})
 
 

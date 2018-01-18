@@ -62,10 +62,15 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-                <li  class="active" id=0><a href="/index/{{ active_module.name }}/" >{{ active_module.desc }}</a></li>
-                <li id={{ module.name }}><a href="/index/{{ module.name }}/" >{{ module.desc }}</a></li>
+                <li  id=2><a href="{% url 'index:index_mode'  'get_result' %}" >执行结果 </a></li>
+                <li id=1><a href="{% url 'index:index_mode'  'get_plan' %}" >执行计划</a></li>
+                <li  id=3><a href="{% url 'index:index_mode'  'insert_plan' %}" >添加执行计划 </a></li>
+             </ul>
+            <ul class="nav nav-sidebar">
+                <li  id=4><a href="{% url 'crontab_formal:insert' %}" >添加执行计划 </a></li>
              </ul>
         </div>
+
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             {% block container%}
                 <div class="jumbotron">
@@ -86,6 +91,11 @@
     <script src="/static/bootstrap/dist/js/bootstrap.js"></script>
     <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
     <script src="/static/holder.js"></script>
+    <script>
+        $(function (){
+            $("a[href='{{ request.path }}']").parent().addClass("active")
+        });
+    </script>
 
 
 </body></html>

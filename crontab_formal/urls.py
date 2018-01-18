@@ -13,14 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
-from rcrontab import views
 
+from django.urls import path, re_path
+from crontab_formal import views
+
+app_name = 'crontab_formal'
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('index/', include('rcrontab.urls')),
-    path('logout/', views.do_logout),
-    path('crontab/', include('crontab_formal.urls')),
-    path('accounts/login/', views.do_login)
+    path('insert/', views.insert, name='insert'),
+
 ]
