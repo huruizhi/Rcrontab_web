@@ -51,20 +51,24 @@ class PyScriptBaseInfoV2(models.Model):
     is_stop_choice = ((0, '执行'),
                       (1, '停止'))
 
-    is_test = ((0, '正式'),
-               (1, '测试'))
+    is_test = ((1, '测试'), (0, '正式'),)
 
     run_type = ((0, '调用api'),
                 (1, '调用程序'))
 
+    program_type = ((0, '抓取'),
+                    (1, '计算'),
+                    (2, '其他'))
+
     sid = models.AutoField(primary_key=True)
+    name = models.CharField(verbose_name='名称', max_length=50)
+    program_type = models.IntegerField(verbose_name='程序类型', choices=program_type)
     version = models.DateField(blank=True, null=True)
     run_type = models.SmallIntegerField(choices=run_type, default=0)
     pre_tables = models.ManyToManyField('TablesInfo', related_name='son_program', blank=True )
     result_tables = models.ManyToManyField('TablesInfo', related_name='father_program')
-    name = models.CharField(verbose_name='名称', max_length=50)
     path = models.ForeignKey('Path', on_delete=models.DO_NOTHING, related_name='program')
-    function = models.CharField(verbose_name='程序功能', max_length=50)
+    function = models.TextField(verbose_name='程序功能', max_length=50)
     exec_plan = models.IntegerField(verbose_name='执行计划', choices=exec_plan_choice)
     exec_month = models.CharField(max_length=30, blank=True, null=True)
     exec_day = models.CharField(max_length=30, blank=True, null=True)
