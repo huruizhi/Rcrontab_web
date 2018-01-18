@@ -9,6 +9,7 @@
         <th>部署服务器</th>
         <th>部署路径</th>
         <th>程序功能</th>
+        <th>是否停止</th>
         <th></th>
         <th></th>
     </tr>
@@ -17,7 +18,15 @@
     {% for list in item_list%}
         <tr>
         {% for item in list %}
-            <td>{{ item }}</td>
+            {% if forloop.counter == 7 %}
+                {% if item == 0 %}
+                    <td><p style="color: green">运行</p></td>
+                {% else %}
+                    <td><p style="color: red">停止</p></td>
+                {% endif %}
+            {% else %}
+                <td>{{ item }}</td>
+            {% endif %}
         {% endfor %}
         <td><input type="button" url="/index/edit_plan/{{ list.0 }}/" class="btn btn-info" value="修改"
                    data-toggle="modal" data-target="#myModal" onclick="edit_plan(this)" ></td>

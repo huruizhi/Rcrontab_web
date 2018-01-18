@@ -23,7 +23,6 @@ urlpatterns = [
     re_path('index/(?P<mode>[a-zA-z0-9]+)/', views.index, name='index_mode'),
     path('index/', views.index),
     path('logout/', views.do_logout),
-    # path('edit/', views.edit_plan),
+    path('crontab/', include('crontab_formal.urls')),
     path('accounts/login/', views.do_login)
-
 ]

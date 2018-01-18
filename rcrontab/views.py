@@ -11,6 +11,7 @@ from rcrontab import models, forms
 
 # Create your views here.
 
+
 def do_login(request):
     if request.method == 'POST':
         user = authenticate(username=request.POST.get('username'),
@@ -63,8 +64,9 @@ class InIndex:
         if self.r.method == "POST":
             dic = json.loads(self.r.POST['data_list'])
             user = dic['name']
-            sql_str = "select sid,parent_id,exec_time,deploy_server,CONCAT(deploy_directory,name),function" \
-                      " from py_script_base_info_new where exec_plan=1 and `owner`=%s"
+            sql_str = "select sid,parent_id,exec_time,deploy_server,CONCAT(deploy_directory,name),function, is_stop" \
+                      " from py_script_base_info_new where exec_plan=1 and `owner`=%s " \
+                      "ORDER BY is_stop, deploy_server, exec_time"
             with connection.cursor() as cursor:
                 cursor.execute(sql_str, [user])
                 rows = cursor.fetchall()
@@ -193,6 +195,7 @@ def _send_to_master(msg_type, **kwargs):
         s.sendall(send_str)
         data = s.recv(1024).decode('utf-8')
         print('send_to_master:', data)
+
 
 
 

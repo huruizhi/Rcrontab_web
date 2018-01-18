@@ -41,7 +41,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <div class="navbar-brand">Welcome &nbsp;&nbsp;{{ user_name.first_name }}&nbsp;{{ user_name.last_name }}</div>
+          <div class="navbar-brand">Welcome &nbsp;&nbsp;{{ request.user.last_name }}&nbsp;{{ request.user.first_name }}</div>
         </div>
 
         <div id="navbar" class="navbar-collapse collapse">
@@ -61,18 +61,10 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-              {% menu_list as modules_list %}
-              {% for int, modules in modules_list.items %}
-                  <ul class="nav nav-sidebar">
-              {% for module in modules %}
-                 {% if  active_module.id == module.id %}
-                <li  class="active" id={{ active_module.name }}><a href="/index/{{ active_module.name }}/" >{{ active_module.desc }}</a></li>
-                  {% else %}
+            <ul class="nav nav-sidebar">
+                <li  class="active" id=0><a href="/index/{{ active_module.name }}/" >{{ active_module.desc }}</a></li>
                 <li id={{ module.name }}><a href="/index/{{ module.name }}/" >{{ module.desc }}</a></li>
-                  {% endif %}
-              {% endfor %}
-                  </ul>
-              {% endfor %}
+             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             {% block container%}
