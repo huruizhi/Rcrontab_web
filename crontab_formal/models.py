@@ -23,7 +23,7 @@ class Path(models.Model):
     path = models.CharField(max_length=200)
 
     def __str__(self):
-        return "%s:%s" % (self.server, self.path)
+        return "Server:(%s),Path:%s" % (self.server, self.path)
 
     class Meta:
         db_table = 'py_script_programs_path'
@@ -62,6 +62,7 @@ class PyScriptBaseInfoV2(models.Model):
 
     sid = models.AutoField(primary_key=True)
     name = models.CharField(verbose_name='名称', max_length=50)
+    project = models.CharField(verbose_name='项目名称', max_length=50)
     program_type = models.IntegerField(verbose_name='程序类型', choices=program_type)
     version = models.DateField(blank=True, null=True)
     run_type = models.SmallIntegerField(choices=run_type, default=0)
@@ -86,15 +87,15 @@ class PyScriptBaseInfoV2(models.Model):
 
 
 class ResultLog(models.Model):
+    event_type_list = ((0, '执行调度'), (1, '开始执行'), (2, '正常结束'), (3, '异常终止'))
     script = models.ForeignKey('PyScriptBaseInfoV2', models.DO_NOTHING, related_name='result', db_column='sid')
     version = models.DateField()
-    start_time = models.DateTimeField()
-    is_normal = models.IntegerField()
+    event_time = models.DateTimeField()
+    event_type = models.IntegerField(choices=event_type_list)
     err_info = models.CharField(max_length=255, blank=True, null=True)
-    end_time = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.script, self.start_time
+        return self.script, self.version
 
     class Meta:
         db_table = 'py_script_result_log'
