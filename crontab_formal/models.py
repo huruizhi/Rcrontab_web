@@ -75,6 +75,7 @@ class PyScriptBaseInfoV2(models.Model):
     exec_day = models.CharField(max_length=30, blank=True, null=True)
     exec_time = models.CharField(max_length=50, blank=True, null=True)
     owner = models.ForeignKey(rmodels.PyScriptOwnerList, models.DO_NOTHING, related_name='programs')
+    times = models.IntegerField(default=1)
     is_stop = models.IntegerField(default=0, choices=is_stop_choice)
     is_test = models.IntegerField(default=0, choices=is_test)
 
@@ -87,10 +88,12 @@ class PyScriptBaseInfoV2(models.Model):
 
 
 class ResultLog(models.Model):
-    event_type_list = ((0, '执行调度'), (1, '开始执行'), (2, '正常结束'), (3, '异常终止'))
+    event_type_list = ((0, '执行调度'), (1, '开始执行'), (2, '正常结束'), (3, '异常终止'),
+                       (4, '质控正常'), (5, '质控异常'))
     script = models.ForeignKey('PyScriptBaseInfoV2', models.DO_NOTHING, related_name='result', db_column='sid')
     version = models.DateField()
     event_time = models.DateTimeField()
+    subversion = models.DateTimeField(blank=True, null=True)
     event_type = models.IntegerField(choices=event_type_list)
     err_info = models.CharField(max_length=255, blank=True, null=True)
 
