@@ -95,7 +95,7 @@ class ResultLog(models.Model):
     event_time = models.DateTimeField()
     subversion = models.DateTimeField(blank=True, null=True)
     event_type = models.IntegerField(choices=event_type_list)
-    err_info = models.CharField(max_length=255, blank=True, null=True)
+    extra_info = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.script, self.version
