@@ -87,6 +87,13 @@ class PyScriptBaseInfoV2(models.Model):
         unique_together = ('name', 'path')
 
 
+class PyScriptBaseExtraInfoV2(models.Model):
+    insert_way_choice = ((0, 'ignore'), (1, 'replace'))
+    sid = models.OneToOneField('PyScriptBaseInfoV2',
+                               on_delete=models.DO_NOTHING, related_name='extra_info',db_column = 'sid')
+    insert_way = models.IntegerField(choices=insert_way_choice)
+
+
 class ResultLog(models.Model):
     event_type_list = ((0, '执行调度'), (1, '开始执行'), (2, '正常结束'), (3, '异常终止'),
                        (4, '质控正常'), (5, '质控异常'))
@@ -95,7 +102,8 @@ class ResultLog(models.Model):
     event_time = models.DateTimeField()
     subversion = models.DateTimeField(blank=True, null=True)
     event_type = models.IntegerField(choices=event_type_list)
-    extra_info = models.CharField(max_length=255, blank=True, null=True)
+    extra_info = models.TextField(blank=True, null=True)
+    flag = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.script, self.version
