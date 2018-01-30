@@ -7,3 +7,10 @@ class ScriptBaseInfo(forms.ModelForm):
     class Meta:
         model = models.PyScriptBaseInfoV2
         exclude = ['version', ]
+
+
+class Path(forms.ModelForm):
+
+    class Meta:
+        model = models.Path
+        exclude = []

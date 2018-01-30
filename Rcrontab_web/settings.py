@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rcrontab.apps.RcrontabConfig',
+    'rcrontab',
     'Rcrontab_web',
     'crontab_formal',
 
@@ -81,23 +81,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'py_crontab',
-        'USER': 'db_test',
-        'PASSWORD': '1qaz@WSXQWER',
-        'HOST': '114.55.77.123',
+        'USER': 'pycf',
+        'PASSWORD': '1qaz@WSXabc',
+        'HOST': '192.168.0.151',
         'PORT': '3306',
         'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", },
     },
 }
-# DATABASE_ROUTERS = ['Rcrontab_web.db_router.FormalRouter',
-#                     'Rcrontab_web.db_router.PrimaryRouter', ]
 
-# DATABASE_APPS_MAPPING = {
-#     # example:
-#     # 'app_name':'database_name',
-# }
-
-# Password validation
-# https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -134,5 +125,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR,  'media')
 STATICFILES_DIRS = (os.path.join(BASE_DIR,  'static'),)
 TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)

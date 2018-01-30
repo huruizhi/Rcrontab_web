@@ -21,19 +21,23 @@ class ServerInfo(models.Model):
 class Path(models.Model):
     server = models.ForeignKey('ServerInfo', on_delete=models.DO_NOTHING)
     path = models.CharField(max_length=200)
+    project = models.CharField(verbose_name='项目名称', max_length=50)
+    project_conf = models.FileField(upload_to='project_conf/', blank=True, null=True)
+    project_package = models.FileField(upload_to='project_package/', blank=True, null=True)
 
     def __str__(self):
-        return "Server:(%s),Path:%s" % (self.server, self.path)
+        return "project:(%s),Server:(%s),Path:%s" % (self.server, self.project, self.path)
 
     class Meta:
         db_table = 'py_script_programs_path'
+        unique_together = ('server', 'path', 'project')
 
 
 class TablesInfo(models.Model):
     db = (('db_ali', 'db_阿里云'), ('db_151', 'db_151'), ('db_153', 'db_153'))
     db_server = models.CharField(max_length=20, choices=db)
     db_name = models.CharField(max_length=30)
-    table_name = models.CharField(max_length=30)
+    table_name = models.CharField(max_length=100)
 
     def __str__(self):
         return "%s:%s.%s" % (self.db_server, self.db_name, self.table_name)
@@ -62,7 +66,6 @@ class PyScriptBaseInfoV2(models.Model):
 
     sid = models.AutoField(primary_key=True)
     name = models.CharField(verbose_name='名称', max_length=50)
-    project = models.CharField(verbose_name='项目名称', max_length=50)
     program_type = models.IntegerField(verbose_name='程序类型', choices=program_type)
     version = models.DateField(blank=True, null=True)
     run_type = models.SmallIntegerField(choices=run_type, default=0)
@@ -87,11 +90,11 @@ class PyScriptBaseInfoV2(models.Model):
         unique_together = ('name', 'path')
 
 
-class PyScriptBaseExtraInfoV2(models.Model):
-    insert_way_choice = ((0, 'ignore'), (1, 'replace'))
-    sid = models.OneToOneField('PyScriptBaseInfoV2',
-                               on_delete=models.DO_NOTHING, related_name='extra_info',db_column = 'sid')
-    insert_way = models.IntegerField(choices=insert_way_choice)
+# class PyScriptBaseExtraInfoV2(models.Model):
+#     insert_way_choice = ((0, 'ignore'), (1, 'replace'))
+#     sid = models.OneToOneField('PyScriptBaseInfoV2',
+#                                on_delete=models.DO_NOTHING, related_name='extra_info', db_column='sid')
+#     insert_way = models.IntegerField(choices=insert_way_choice)
 
 
 class ResultLog(models.Model):
