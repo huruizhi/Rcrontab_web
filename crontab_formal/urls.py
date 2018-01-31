@@ -20,5 +20,5 @@ from crontab_formal import views
 app_name = 'crontab_formal'
 urlpatterns = [
     path('insert/', views.insert, name='insert'),
-
+    path('get_plan/', views.get_plan, name='get_plan'),
 ]

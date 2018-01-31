@@ -1,0 +1,102 @@
+{% extends 'Base.html' %}
+
+{% block container %}
+
+    <div class="bs-example bs-example-tabs" data-example-id="togglable-tabs">
+    <ul id="myTabs" class="nav nav-pills" role="tablist">
+        {% for owner in programs_dict %}
+            {% if forloop.counter == 1 %}
+            <li role="presentation" class="active"><a href="#{{ owner }}" id="{{ owner }}-tab" role="tab" data-toggle="tab" aria-controls="{{ owner }}" aria-expanded="true">{{ owner }}</a></li>
+            {% else %}
+            <li role="presentation" class=""><a href="#{{ owner }}" role="tab" id="{{ owner }}-tab" data-toggle="tab" aria-controls="{{ owner }}" aria-expanded="false">{{ owner }}</a></li>
+            {% endif %}
+            <li role="presentation" class=""><a href="#Profile" role="tab" id="Profile-tab" data-toggle="tab" aria-controls="Profile" aria-expanded="false">Profile</a></li>
+
+        {% endfor %}
+    </ul>
+
+    <div id="myTabContent" class="tab-content">
+        {% for owner_name,programs in programs_dict.items %}
+            {% if forloop.counter == 1 %}
+      <div role="tabpanel" class="tab-pane fade active in" id="{{ owner_name }}" aria-labelledby="{{ owner_name }}-tab">
+      <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>NO.</th>
+          <th>program_name</th>
+          <th>program_type</th>
+          <th>program_version</th>
+          <th>调用方式</th>
+          <th>pre_tables</th>
+          <th>result_tables</th>
+          <th>program_function</th>
+          <th>执行计划</th>
+          <th>rerun_times</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for sid,program_info in  programs.items %}
+          {% if program_info.program_info.is_stop == 1 %}
+            <tr class="danger">
+          {% elif program_info.program_info.is_test == 1 %}
+            <tr class="warning">
+          {% else %}
+              <tr>
+          {% endif %}
+           <td>{{ program_info.program_info.sid }}</td>
+          <td>{{ program_info.program_info.name }}</td>
+          <td>{% if program_info.program_info.program_type == 0 %}
+                抓取程序
+              {% elif program_info.program_info.exec_plan == 1%}
+              计算程序
+                {% else %}
+              其他
+              {% endif %}
+
+          </td>
+          <td>{{ program_info.program_info.version }}</td>
+          <td>{% if program_info.program_info.run_type == 0%}
+                调用url_api
+              {% else %}
+                调用程序
+              {% endif %}
+          </td>
+          <td>{{ program_info.pre_tables |safe}}</td>
+          <td>{{ program_info.result_tables |safe }}</td>
+          <td>{{ program_info.program_info.function }}</td>
+          <td>{% if program_info.program_info.exec_plan == 1 %}
+              执行计划:每天<br>
+              {% elif program_info.program_info.exec_plan == 2%}
+              执行计划:每月<br>
+              {% else %}
+              执行计划:其他<br>
+              {% endif %}
+              time:{{ program_info.program_info.exec_time }}<br>
+              (month:{{ program_info.program_info.exec_month }}/day:{{ program_info.program_info.exec_day }})</td>
+          <td>{{ program_info.program_info.times }}</td>
+          </tr>
+       {% endfor %}
+      </tbody>
+    </table>
+      </div>
+
+            {% else %}
+      <div role="tabpanel" class="tab-pane fade in" id="{{ owner }}" aria-labelledby="{{ owner }}-tab">
+       {% for program_info in  programs_dict.owner %}
+           {{ program_info }}
+       {% endfor %}
+      </div>
+
+            {% endif %}
+        {% endfor %}
+
+
+
+    <div role="tabpanel" class="tab-pane fade  in" id="Profile" aria-labelledby="Profile-tab">
+       1111111111111231231231231231231231
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

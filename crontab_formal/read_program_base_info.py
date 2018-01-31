@@ -1,8 +1,11 @@
 import os
 import configparser
 from .models import Path, TablesInfo, PyScriptBaseInfoV2
+from .forms import ScriptBaseInfo
 from django.db.models import Model
 from rcrontab.models import PyScriptOwnerList
+from django.http import QueryDict
+import time
 
 
 class ReadProgramsInfo:
@@ -48,7 +51,7 @@ class ReadProgramsInfo:
 
         # --end 获取前置表和结果表-----
         # --外键 path------------
-        program_info_new['path_id'] = Path.objects.get(project_conf=self.project_conf).id
+        program_info_new['path'] = Path.objects.get(project_conf=self.project_conf).id
         # ---------------------------------
         program_info_new["name"] = program_info['name']
         program_info_new["program_type"] = program_info['program_type']
@@ -57,30 +60,39 @@ class ReadProgramsInfo:
         program_info_new["exec_plan"] = program_info['exec_plan']
         if 'exec_time' in program_info:
             program_info_new["exec_time"] = program_info['exec_time']
-        if 'exec_month' in program_info:
-            program_info_new["exec_month"] = program_info['exec_month']
-        if 'exec_day' in program_info:
-            program_info_new["exec_day"] = program_info['exec_day']
+        if 'month' in program_info:
+            program_info_new["exec_month"] = ",{month},".format(month=program_info['month'])
+        if 'day' in program_info:
+            program_info_new["exec_day"] = ",{day},".format(day=program_info['day'])
+            print('day:', program_info['day'])
         if 'times' in program_info:
             program_info_new["times"] = program_info['times']
         else:
             program_info_new['times'] = 1
 
+        program_info_new['version'] = time.strftime("%Y-%m-%d")
         program_info_new["is_test"] = program_info['is_test']
         program_info_new["is_stop"] = 0
         # --获取owner
         program_info_new['owner'] = PyScriptOwnerList.objects.get(owner=program_info['owner'])
-        # --数据保存--
-        try:
-            print(program_info_new["name"])
-            base_info_save = PyScriptBaseInfoV2(**program_info_new)
-            base_info_save.save()
-            base_info_obj = PyScriptBaseInfoV2.objects.get(name=program_info_new["name"])
-            base_info_obj.result_tables.add(*result_tables)
-            if pre_tables:
-                base_info_obj.pre_tables.add(*pre_tables)
-        except Exception as e:
-            print(program_info_new["name"], ":", e)
+        qd = QueryDict(mutable=True)
+        qd.update(program_info_new)
+        for table_id in result_tables:
+            qd.update({'result_tables': table_id})
+        if pre_tables:
+            for table_id in pre_tables:
+                qd.update({'pre_tables': table_id})
+
+        base_info = ScriptBaseInfo(qd)
+        print("qd", qd)
+        if base_info.is_valid():
+            try:
+                base_info.save()
+            except Exception as e:
+                print(e)
+                a = ScriptBaseInfo.objects.get(name=program_info_new["name"], path_id=program_info_new["path"])
+                base_info = ScriptBaseInfo(qd, instance=a)
+                base_info.save()
 
     @staticmethod
     def handle_tables_info(tables_list, db_server, db_name):
@@ -99,12 +111,12 @@ class ReadProgramsInfo:
                 table_info['db_name'] = db_name
             table_info['table_name'] = table
             try:
-                table = TablesInfo.objects.filter(**table_info)
-                tables_info_list.append(table[0])
+                table = TablesInfo.objects.get(**table_info)
+                tables_info_list.append(table.id)
             except Model.DoesNotExist:
                 print("ModelDoesNotExist")
-
         return tables_info_list
+
 
 
 
