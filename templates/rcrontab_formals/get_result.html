@@ -1,0 +1,88 @@
+{% extends 'Base.html' %}
+
+{% block container %}
+
+    <div class="bs-example bs-example-tabs" data-example-id="togglable-tabs">
+     <div class="panel-body">
+    <ul id="owner_list" class="nav nav-pills" role="tablist">
+        {% for owner in owners_list %}
+            {% if forloop.counter == 1 %}
+            <li role="presentation" class="active"><a id="{{ owner }}-tab" role="tab" data-toggle="tab" aria-controls="{{ owner }}" aria-expanded="true" onclick="submit(this)">{{ owner }}</a></li>
+            {% else %}
+            <li role="presentation" class=""><a  role="tab" id="{{ owner }}-tab" data-toggle="tab" aria-controls="{{ owner }}" aria-expanded="false" onclick="submit(this)">{{ owner }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+     </div>
+    <div class="panel-body">
+     <ul id="version_list" class="nav nav-pills" role="tablist">
+        {% for version in version_list %}
+            {% if forloop.counter == 1 %}
+            <li role="presentation" class="active"><a id="{{ version }}-tab" role="tab" data-toggle="tab" aria-controls="{{ version }}" aria-expanded="true" onclick="submit(this)">{{ version }}</a></li>
+            {% else %}
+            <li role="presentation" class=""><a role="tab" id="{{ version }}-tab" data-toggle="tab" aria-controls="{{ version }}" aria-expanded="false" onclick="submit(this)">{{ version }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    </div>
+    </div>
+
+    <div id="myTabContent" class="tab-content">
+
+
+  </div>
+    <script src="/static/jquery-3.2.1.js"></script>
+    <script>
+    function submit(ths) {
+        var parent = $(ths).parent().attr('id')
+        if(parent=='owner_list'){
+            var Owner=$(ths).text()
+            var version=$('#version_list').children('.active').text()
+        }else {
+            var Owner=$('#owner_list').children('.active').text()
+            var version=$(ths).text()
+        }
+        var data={'owner': Owner, 'version':version}
+        get_result(data)
+    };
+
+    function get_result(data) {
+        $.ajax({
+                type:"get",
+                url:"{{ request.path }}",
+                data:data,
+                success: function (arg) {
+                    $("#myTabContent").empty()
+                    $('#myTabContent').append(arg)
+                }
+            });
+    }
+
+    $(function(){
+function load_data() {
+    var version = $('#version_list').children('.active').text()
+    var Owner = $('#owner_list').children('.active').text()
+    var data = {'owner': Owner, 'version': version}
+    console.log(data)
+    get_result(data)
+}
+load_data();
+setInterval(load_data,30000);// 注意函数名没有引号和括弧！
+// 使用setInterval("show()",3000);会报“缺少对象”
+
+});
+
+
+
+    </script>
+{% endblock %}
+
+
+        window.onload = function () {
+        var version=$('#version_list').children('.active').text()
+        var Owner=$('#owner_list').children('.active').text()
+        var data={'owner': Owner, 'version':version}
+        console.log(data)
+        get_result(data)
+
+    };

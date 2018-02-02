@@ -50,6 +50,7 @@ class PyScriptErrInfoDaliy(models.Model):
 
 class PyScriptOwnerList(models.Model):
     owner = models.CharField(verbose_name='所有者', max_length=10, primary_key=True)
+    mail = models.EmailField()
     password = models.CharField(max_length=255, blank=True, null=True)
     vip = models.IntegerField(blank=True, null=True)
 
