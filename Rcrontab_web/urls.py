@@ -16,11 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rcrontab import views
+from crontab_formal.views import send_email
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('index/', include('rcrontab.urls')),
     path('logout/', views.do_logout),
     path('crontab/', include('crontab_formal.urls')),
-    path('accounts/login/', views.do_login)
+    path('accounts/login/', views.do_login),
+    path('send_mail/', send_email)
 ]

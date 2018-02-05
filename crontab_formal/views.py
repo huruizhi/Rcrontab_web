@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from rcrontab.models import PyScriptOwnerList
 from .models import PyScriptBaseInfoV2
 from django.db import connection
 from . import forms
 from .read_program_base_info import ReadProgramsInfo
+from django.core.mail import send_mail
 import time
 
 # Create your views here.
@@ -72,6 +73,7 @@ def get_result(request):
         if request.GET:
             owner = request.GET['owner']
             version = request.GET['version']
+            print(owner, version)
             sql_code = '''select 
               a.sid,a.`name`,a.version,
               a.owner_id as owner,
@@ -89,7 +91,7 @@ def get_result(request):
               from 
               (select b.sid,b.`name`,a.version,b.owner_id,b.exec_plan
               from 
-              (select DISTINCT version from py_script_result_log LIMIT 5) a
+              (select DISTINCT version from py_script_result_log order by version desc LIMIT 5) a
               ,(select sid,name,owner_id,exec_plan from py_script_base_info_v2
               )b ORDER BY a.version,b.sid) a
               LEFT JOIN 
@@ -129,15 +131,25 @@ def get_result(request):
                 return render(request, 'rcrontab_formals/get_result_table.html', {'result_list': result_list})
         else:
             owners_list = PyScriptOwnerList.objects.all()
-            time_list_sql_code = '''select DISTINCT version from py_script_result_log LIMIT 5'''
+            time_list_sql_code = '''select DISTINCT version from py_script_result_log order by version desc LIMIT 5'''
             with connection.cursor() as cursor:
                 cursor.execute(time_list_sql_code)
                 time_list1 = cursor.fetchall()
                 time_list2 = list()
                 for ti in time_list1:
                     time_list2.append(str(ti[0]))
-                time_list = time_list2[::-1]
-            return render(request, 'rcrontab_formals/get_result.html', {'owners_list': owners_list, 'version_list': time_list})
+            return render(request, 'rcrontab_formals/get_result.html', {'owners_list': owners_list,
+                                                                        'version_list': time_list2})
+
+
+def send_email(request):
+    if request.method == 'GET':
+        subject = request.GET['subject']
+        msg = request.GET['msg']
+        to_address = request.GET['to_address']
+        print(subject, msg, to_address)
+        send_mail(subject, msg, 'huruizhi@pystandard.com', [to_address, ], fail_silently=False)
+        return HttpResponse(request, "OK")
 
 
 

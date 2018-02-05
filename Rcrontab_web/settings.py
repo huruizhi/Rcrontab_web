@@ -128,3 +128,15 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR,  'media')
 STATICFILES_DIRS = (os.path.join(BASE_DIR,  'static'),)
 TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
+
+
+# send mail
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_USE_TLS = False
+EMAIL_HOST = 'smtp.mxhichina.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'huruizhi@pystandard.com'
+EMAIL_HOST_PASSWORD = '510543763@hrz'
+DEFAULT_FROM_EMAIL = '普益运维邮箱 <huruizhi@pystandard.com>'
