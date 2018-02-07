@@ -115,7 +115,8 @@ class ReadProgramsInfo:
                 tables_info_list.append(table.id)
             except TablesInfo.DoesNotExist:
                 print("TablesInfo DoesNotExist:[{db_server}]{db_name}.{table_name}".format(
-                    db_server=table_info['db_server'], db_name=table_info['db_name'], table_name=table_info['db_name']
+                    db_server=table_info['db_server'], db_name=table_info['db_name'],
+                    table_name=table_info['table_name']
                 ))
         return tables_info_list
 
