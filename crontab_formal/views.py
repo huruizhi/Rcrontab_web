@@ -5,7 +5,6 @@ from django.db import connection
 from . import forms
 from .read_program_base_info import ReadProgramsInfo
 from django.core.mail import send_mail
-import time
 
 # Create your views here.
 

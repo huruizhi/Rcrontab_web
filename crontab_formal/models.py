@@ -24,13 +24,14 @@ class Path(models.Model):
     project = models.CharField(verbose_name='项目名称', max_length=50)
     project_conf = models.FileField(upload_to='project_conf/', blank=True, null=True)
     project_package = models.FileField(upload_to='project_package/', blank=True, null=True)
+    comments = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return "project:(%s),Server:(%s),Path:%s" % (self.server, self.project, self.path)
 
     class Meta:
         db_table = 'py_script_programs_path'
-        unique_together = ('server', 'path', 'project')
+        unique_together = ('server', 'path', 'project', 'project_conf')
 
 
 class TablesInfo(models.Model):
