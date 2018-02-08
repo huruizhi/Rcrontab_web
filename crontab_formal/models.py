@@ -88,7 +88,6 @@ class PyScriptBaseInfoV2(models.Model):
 
     class Meta:
         db_table = 'py_script_base_info_v2'
-        unique_together = ('name', )
 
 
 # class PyScriptBaseExtraInfoV2(models.Model):

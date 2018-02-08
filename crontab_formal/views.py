@@ -11,13 +11,13 @@ from django.core.mail import send_mail
 
 def insert(request):
     if request.method == 'POST':
-        form = forms.Path(request.POST, request.FILES)
+        form = forms.PathForm(request.POST, request.FILES)
         if form.is_valid():
             # file is saved
             path = form.save()
             ReadProgramsInfo(path).get_programs_info_list()
     else:
-        form = forms.Path()
+        form = forms.PathForm()
     return render(request, 'rcrontab_formals/insert.html', {'form': form})
 
 

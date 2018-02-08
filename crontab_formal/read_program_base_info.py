@@ -1,7 +1,7 @@
 import os
 import configparser
 from .models import Path, TablesInfo, PyScriptBaseInfoV2
-from .forms import ScriptBaseInfo
+from .forms import ScriptBaseInfoForm
 from django.db.models import Model
 from rcrontab.models import PyScriptOwnerList
 from django.http import QueryDict
@@ -39,14 +39,14 @@ class ReadProgramsInfo:
             db_name = ""
 
         result_tables_list = program_info['result_tables'].split(",")
-        tables_info = self.handle_tables_info(result_tables_list, db_server, db_name)
+        tables_info = self.handle_tables_info(program_info['name'], result_tables_list, db_server, db_name)
         result_tables = tables_info
 
         pre_tables = None
         if 'pre_tables' in program_info:
             if program_info['pre_tables']:
                 result_tables_list = program_info['pre_tables'].split(",")
-                tables_info = self.handle_tables_info(result_tables_list, db_server, db_name)
+                tables_info = self.handle_tables_info(program_info['name'], result_tables_list, db_server, db_name)
                 pre_tables = tables_info
 
         # --end 获取前置表和结果表-----
@@ -64,7 +64,7 @@ class ReadProgramsInfo:
             program_info_new["exec_month"] = ",{month},".format(month=program_info['month'])
         if 'day' in program_info:
             program_info_new["exec_day"] = ",{day},".format(day=program_info['day'])
-            print('day:', program_info['day'])
+            # print('day:', program_info['day'])
         if 'times' in program_info:
             program_info_new["times"] = program_info['times']
         else:
@@ -83,19 +83,25 @@ class ReadProgramsInfo:
             for table_id in pre_tables:
                 qd.update({'pre_tables': table_id})
 
-        base_info = ScriptBaseInfo(qd)
+        base_info = ScriptBaseInfoForm(qd)
         print("qd", qd)
         if base_info.is_valid():
             try:
+                a = PyScriptBaseInfoV2.objects.get(name=program_info_new["name"])
+                base_info = ScriptBaseInfoForm(qd, instance=a)
                 base_info.save()
+                string = "修改数据{name}".format(name=program_info_new["name"])
+                print(string)
             except Exception as e:
                 print(e)
-                a = ScriptBaseInfo.objects.get(name=program_info_new["name"], path_id=program_info_new["path"])
-                base_info = ScriptBaseInfo(qd, instance=a)
+                string = "新增数据{name}".format(name=program_info_new["name"])
+                print(string)
                 base_info.save()
+        else:
+            print(base_info.errors)
 
     @staticmethod
-    def handle_tables_info(tables_list, db_server, db_name):
+    def handle_tables_info(program_name, tables_list, db_server, db_name):
         tables_info_list = list()
         for table in tables_list:
             table_info = {}
@@ -114,9 +120,9 @@ class ReadProgramsInfo:
                 table = TablesInfo.objects.get(**table_info)
                 tables_info_list.append(table.id)
             except TablesInfo.DoesNotExist:
-                print("TablesInfo DoesNotExist:[{db_server}]{db_name}.{table_name}".format(
+                print("{program_name}: TablesInfo DoesNotExist:[{db_server}]{db_name}.{table_name}".format(
                     db_server=table_info['db_server'], db_name=table_info['db_name'],
-                    table_name=table_info['table_name']
+                    table_name=table_info['table_name'], program_name=program_name
                 ))
         return tables_info_list
 
