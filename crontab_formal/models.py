@@ -19,7 +19,7 @@ class ServerInfo(models.Model):
 
 
 class Path(models.Model):
-    server = models.ForeignKey('ServerInfo', on_delete=models.DO_NOTHING)
+    server = models.ForeignKey('ServerInfo', on_delete=models.CASCADE)
     path = models.CharField(max_length=200)
     project = models.CharField(verbose_name='项目名称', max_length=50)
     project_conf = models.FileField(upload_to='project_conf/', blank=True, null=True)
@@ -72,13 +72,13 @@ class PyScriptBaseInfoV2(models.Model):
     run_type = models.SmallIntegerField(choices=run_type, default=0)
     pre_tables = models.ManyToManyField('TablesInfo', related_name='son_program', blank=True )
     result_tables = models.ManyToManyField('TablesInfo', related_name='father_program')
-    path = models.ForeignKey('Path', on_delete=models.DO_NOTHING, related_name='program')
+    path = models.ForeignKey('Path', on_delete=models.CASCADE, related_name='program')
     function = models.TextField(verbose_name='程序功能', max_length=50)
     exec_plan = models.IntegerField(verbose_name='执行计划', choices=exec_plan_choice)
     exec_month = models.CharField(max_length=30, blank=True, null=True)
     exec_day = models.CharField(max_length=30, blank=True, null=True)
     exec_time = models.CharField(max_length=50, blank=True, null=True)
-    owner = models.ForeignKey(rmodels.PyScriptOwnerList, models.DO_NOTHING, related_name='programs')
+    owner = models.ForeignKey(rmodels.PyScriptOwnerList, on_delete=models.CASCADE, related_name='programs')
     times = models.IntegerField(default=1)
     is_stop = models.IntegerField(default=0, choices=is_stop_choice)
     is_test = models.IntegerField(default=0, choices=is_test)
@@ -100,7 +100,8 @@ class PyScriptBaseInfoV2(models.Model):
 class ResultLog(models.Model):
     event_type_list = ((0, '执行调度'), (1, '开始执行'), (2, '正常结束'), (3, '异常终止'),
                        (4, '质控正常'), (5, '质控异常'))
-    script = models.ForeignKey('PyScriptBaseInfoV2', models.DO_NOTHING, related_name='result', db_column='sid')
+    script = models.ForeignKey('PyScriptBaseInfoV2', on_delete=models.CASCADE,
+                               related_name='result', db_column='sid', null=True)
     version = models.DateField()
     event_time = models.DateTimeField()
     subversion = models.DateTimeField(blank=True, null=True)
