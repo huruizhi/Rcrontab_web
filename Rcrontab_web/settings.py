@@ -81,14 +81,33 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'py_crontab',
+        'USER': 'db_test',
+        'PASSWORD': '1qaz@WSXQWER',
+        'HOST': '114.55.77.123',
+        'PORT': '3306',
+        'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", },
+    },
+    'crontab_formal_db': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'py_crontab',
         'USER': 'pycf',
         'PASSWORD': '1qaz@WSXabc',
         'HOST': '192.168.0.151',
         'PORT': '3306',
         'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", },
     },
+    'rcrontab_db': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'py_crontab',
+        'USER': 'db_test',
+        'PASSWORD': '1qaz@WSXQWER',
+        'HOST': '114.55.77.123',
+        'PORT': '3306',
+        'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", },
+    },
 }
 
+DATABASE_ROUTERS = ['crontab_formal.db_router.FormalRouter', 'rcrontab.db_router.RcrontabRouter']
 
 AUTH_PASSWORD_VALIDATORS = [
     {

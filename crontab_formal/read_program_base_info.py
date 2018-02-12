@@ -1,9 +1,7 @@
 import os
 import configparser
-from .models import Path, TablesInfo, PyScriptBaseInfoV2
+from .models import Path, TablesInfo, PyScriptBaseInfoV2, PyScriptOwnerListV2
 from .forms import ScriptBaseInfoForm
-from django.db.models import Model
-from rcrontab.models import PyScriptOwnerList
 from django.http import QueryDict
 import time
 
@@ -74,7 +72,7 @@ class ReadProgramsInfo:
         program_info_new["is_test"] = program_info['is_test']
         program_info_new["is_stop"] = 0
         # --获取owner
-        program_info_new['owner'] = PyScriptOwnerList.objects.get(owner=program_info['owner'])
+        program_info_new['owner'] = PyScriptOwnerListV2.objects.get(owner=program_info['owner'])
         qd = QueryDict(mutable=True)
         qd.update(program_info_new)
         for table_id in result_tables:

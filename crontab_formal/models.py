@@ -1,5 +1,4 @@
 from django.db import models
-from rcrontab import models as rmodels
 # Create your models here.
 
 
@@ -78,7 +77,7 @@ class PyScriptBaseInfoV2(models.Model):
     exec_month = models.CharField(max_length=30, blank=True, null=True)
     exec_day = models.CharField(max_length=30, blank=True, null=True)
     exec_time = models.CharField(max_length=50, blank=True, null=True)
-    owner = models.ForeignKey(rmodels.PyScriptOwnerList, on_delete=models.CASCADE, related_name='programs')
+    owner = models.ForeignKey('PyScriptOwnerListV2', on_delete=models.CASCADE, related_name='programs')
     times = models.IntegerField(default=1)
     is_stop = models.IntegerField(default=0, choices=is_stop_choice)
     is_test = models.IntegerField(default=0, choices=is_test)
@@ -90,11 +89,15 @@ class PyScriptBaseInfoV2(models.Model):
         db_table = 'py_script_base_info_v2'
 
 
-# class PyScriptBaseExtraInfoV2(models.Model):
-#     insert_way_choice = ((0, 'ignore'), (1, 'replace'))
-#     sid = models.OneToOneField('PyScriptBaseInfoV2',
-#                                on_delete=models.DO_NOTHING, related_name='extra_info', db_column='sid')
-#     insert_way = models.IntegerField(choices=insert_way_choice)
+class PyScriptOwnerListV2(models.Model):
+    owner = models.CharField(verbose_name='所有者', max_length=10, primary_key=True)
+    mail = models.EmailField()
+
+    def __str__(self):
+        return self.owner
+
+    class Meta:
+        db_table = 'py_script_owners_info_v2'
 
 
 class ResultLog(models.Model):

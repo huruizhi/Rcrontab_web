@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
-from rcrontab.models import PyScriptOwnerList
-from .models import PyScriptBaseInfoV2
-from django.db import connection
+from .models import PyScriptBaseInfoV2, PyScriptOwnerListV2
+from django.db import connections
 from . import forms
 from .read_program_base_info import ReadProgramsInfo
 from django.core.mail import send_mail
@@ -22,7 +21,7 @@ def insert(request):
 
 
 def get_plan(request):
-    owners = PyScriptOwnerList.objects.all()
+    owners = PyScriptOwnerListV2.objects.all()
     owners_programs_dict = {}
     for owner in owners:
         programs = PyScriptBaseInfoV2.objects.filter(owner=owner)
@@ -36,7 +35,7 @@ def get_plan(request):
                        left join py_script_base_info_v2_result_tables b on a.sid = b.pyscriptbaseinfov2_id
                        left JOIN py_script_tables_info c on c.id = b.tablesinfo_id
                        where a.sid = {sid}""".format(sid=sid)
-            with connection.cursor() as cursor:
+            with connections['crontab_formal_db'].cursor() as cursor:
                 cursor.execute(result_tables_sql_code)
                 tables = cursor.fetchall()
                 tables_str = ""
@@ -52,7 +51,7 @@ def get_plan(request):
                                    left join py_script_base_info_v2_pre_tables b on a.sid = b.pyscriptbaseinfov2_id
                                    left JOIN py_script_tables_info c on c.id = b.tablesinfo_id
                                    where a.sid = {sid}""".format(sid=sid)
-            with connection.cursor() as cursor:
+            with connections['crontab_formal_db'].cursor() as cursor:
                 cursor.execute(pre_tables_sql_code)
                 tables = cursor.fetchall()
                 tables_str = ""
@@ -124,14 +123,14 @@ def get_result(request):
             where a.owner_id=%s  AND a.version=%s 
             ORDER by exec_plan, exec_result desc
             '''
-            with connection.cursor() as cursor:
+            with connections['crontab_formal_db'].cursor() as cursor:
                 cursor.execute(sql_code, [owner, version])
                 result_list = cursor.fetchall()
                 return render(request, 'rcrontab_formals/get_result_table.html', {'result_list': result_list})
         else:
-            owners_list = PyScriptOwnerList.objects.all()
+            owners_list = PyScriptOwnerListV2.objects.all()
             time_list_sql_code = '''select DISTINCT version from py_script_result_log order by version desc LIMIT 5'''
-            with connection.cursor() as cursor:
+            with connections['crontab_formal_db'].cursor() as cursor:
                 cursor.execute(time_list_sql_code)
                 time_list1 = cursor.fetchall()
                 time_list2 = list()
