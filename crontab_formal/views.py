@@ -4,22 +4,31 @@ from django.db import connections
 from . import forms
 from .read_program_base_info import ReadProgramsInfo
 from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
 
+@login_required
 def insert(request):
     if request.method == 'POST':
-        form = forms.PathForm(request.POST, request.FILES)
+        form = forms.ConfigFileLogForm(request.POST, request.FILES)
+        print("Post:", request.POST)
+        print("file_name:", request.FILES)
         if form.is_valid():
             # file is saved
-            path = form.save()
-            ReadProgramsInfo(path).get_programs_info_list()
+            configfile = form.save()
+            info = ReadProgramsInfo(configfile).get_programs_info_list()
+        else:
+            info = form.errors
+            print(info)
+        return HttpResponse(info)
     else:
-        form = forms.PathForm()
-    return render(request, 'rcrontab_formals/insert.html', {'form': form})
+        form = forms.ConfigFileLogForm()
+        return render(request, 'rcrontab_formals/insert.html', {'form': form})
 
 
+@login_required
 def get_plan(request):
     owners = PyScriptOwnerListV2.objects.all()
     owners_programs_dict = {}
@@ -63,9 +72,11 @@ def get_plan(request):
                 programs_dic[program.sid]['pre_tables'] = tables_str
 
         owners_programs_dict[owner.owner] = programs_dic
+    print(owners_programs_dict)
     return render(request, 'rcrontab_formals/get_plan.html', {'programs_dict': owners_programs_dict})
 
 
+@login_required
 def get_result(request):
     if request.method == 'GET':
         if request.GET:
@@ -145,9 +156,8 @@ def send_email(request):
         subject = request.GET['subject']
         msg = request.GET['msg']
         to_address = request.GET['to_address']
-        print(subject, msg, to_address)
         send_mail(subject, msg, 'huruizhi@pystandard.com', [to_address, ], fail_silently=False)
-        return HttpResponse(request, "OK")
+        return HttpResponse("OK")
 
 
 

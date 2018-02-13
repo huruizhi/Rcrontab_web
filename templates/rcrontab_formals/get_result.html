@@ -34,7 +34,7 @@
     <script src="/static/jquery-3.2.1.js"></script>
     <script>
     function submit(ths) {
-        var parent = $(ths).parent().attr('id')
+        var parent = $(ths).parent().parent().attr('id')
         if(parent=='owner_list'){
             var Owner=$(ths).text()
             var version=$('#version_list').children('.active').text()

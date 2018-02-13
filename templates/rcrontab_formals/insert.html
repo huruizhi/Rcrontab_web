@@ -1,8 +1,15 @@
 {% extends 'Base.html' %}
+{% block style %}
+    <style type="text/css">
+ #parent{width:550px; height:10px; border:2px solid #09F;}
+ #son {width:0; height:100%; background-color:#09F; text-align:center; line-height:10px; font-size:20px; font-weight:bold;}
+</style>
+{% endblock %}
 
 {% block container %}
 
-     <form  enctype="multipart/form-data" method="post" name="plan_info">
+
+     <form  enctype="multipart/form-data" method="post" name="plan_info" id="insert_plan">
 			<div class="modal-body">{% csrf_token %}
 
 <table class="table">
@@ -29,9 +36,52 @@
 {% endif %}
 			</div>
 			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary">
-					提交
-				</button>
 			</div>
             </form>
+                <button type="button" class="btn btn-primary" onclick="submit_data()">
+					提交
+				</button>
+
+<div id="parent">
+ <div id="son"></div>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script>
+function onprogress(evt){
+　　var loaded = evt.loaded;     //已经上传大小情况
+ var tot = evt.total;      //附件总大小
+ var per = Math.floor(100*loaded/tot);  //已经上传的百分比
+　　$("#son").html( per +"%" );
+ $("#son").css("width" , per +"%");
+}
+
+function submit_data() {
+    var form_data = new FormData();
+    form_data.append('path', $('#id_path').val());
+    form_data.append('project_conf', $('#id_project_conf')[0].files[0]);
+    form_data.append('project_package', $('#id_project_package')[0].files[0]);
+    form_data.append('comments', $('#id_comments').val());
+            $.ajax({
+                type:"post",
+                url: "{{ request.path }}",
+                data: form_data,
+                contentType:false,
+                processData:false,
+
+                //这里我们先拿到jQuery产生的 XMLHttpRequest对象，为其增加 progress 事件绑定
+                xhr: function(){
+　　　　　　    var xhr = $.ajaxSettings.xhr();
+　　　　　　    if(onprogress && xhr.upload) {
+　　　　　　　　xhr.upload.addEventListener("progress" , onprogress, false);
+　　　　　　　　return xhr;}
+　　　　        },
+                success:function (arg) {
+                    alert(arg)
+            }
+    });
+}
+
+</script>
 {% endblock %}

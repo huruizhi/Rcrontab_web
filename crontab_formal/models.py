@@ -18,19 +18,26 @@ class ServerInfo(models.Model):
 
 
 class Path(models.Model):
-    server = models.ForeignKey('ServerInfo', on_delete=models.CASCADE)
+    server = models.ForeignKey('ServerInfo', on_delete=models.DO_NOTHING)
     path = models.CharField(max_length=200)
     project = models.CharField(verbose_name='项目名称', max_length=50)
-    project_conf = models.FileField(upload_to='project_conf/', blank=True, null=True)
-    project_package = models.FileField(upload_to='project_package/', blank=True, null=True)
-    comments = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return "project:(%s),Server:(%s),Path:%s" % (self.server, self.project, self.path)
+        return "project:(%s),[Server:(%s)]Path:%s" % (self.project, self.server, self.path)
 
     class Meta:
         db_table = 'py_script_programs_path'
-        unique_together = ('server', 'path', 'project', 'project_conf')
+        unique_together = ('server', 'path', 'project')
+
+
+class ConfigFileLog(models.Model):
+    path = models.ForeignKey('Path', on_delete=models.DO_NOTHING)
+    project_conf = models.FileField(upload_to='project_conf/', unique=True)
+    project_package = models.FileField(upload_to='project_package/', blank=True, null=True)
+    comments = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'py_script_config_file_log'
 
 
 class TablesInfo(models.Model):

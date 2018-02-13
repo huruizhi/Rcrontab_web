@@ -9,8 +9,8 @@ class ScriptBaseInfoForm(forms.ModelForm):
         exclude = []
 
 
-class PathForm(forms.ModelForm):
+class ConfigFileLogForm(forms.ModelForm):
 
     class Meta:
-        model = models.Path
+        model = models.ConfigFileLog
         exclude = []
