@@ -19,13 +19,13 @@ def insert(request):
             # file is saved
             configfile = form.save()
             info = ReadProgramsInfo(configfile).get_programs_info_list()
+            return HttpResponse(info)
         else:
             info = form.errors
             print(info)
-        return HttpResponse(info)
     else:
         form = forms.ConfigFileLogForm()
-        return render(request, 'rcrontab_formals/insert.html', {'form': form})
+    return render(request, 'rcrontab_formals/insert.html', {'form': form})
 
 
 @login_required

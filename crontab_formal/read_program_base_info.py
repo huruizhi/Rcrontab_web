@@ -22,7 +22,7 @@ class ReadProgramsInfo:
         for name in conf.sections():
             program_info = dict(conf.items(name))
             program_info['name'] = name
-            info += self.handle_data_save(program_info)
+            info += str(self.handle_data_save(program_info))
         return info
 
     def handle_data_save(self, program_info):
@@ -95,7 +95,6 @@ class ReadProgramsInfo:
                 string = "修改数据{name}\n".format(name=program_info_new["name"])
                 info = string
             except Exception as e:
-                print(e)
                 string = "新增数据{name}\n".format(name=program_info_new["name"])
                 info = string
                 base_info.save()

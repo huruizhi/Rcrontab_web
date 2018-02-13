@@ -1,10 +1,4 @@
 {% extends 'Base.html' %}
-{% block style %}
-    <style type="text/css">
- #parent{width:550px; height:10px; border:2px solid #09F;}
- #son {width:0; height:100%; background-color:#09F; text-align:center; line-height:10px; font-size:20px; font-weight:bold;}
-</style>
-{% endblock %}
 
 {% block container %}
 
@@ -38,13 +32,36 @@
 			<div class="modal-footer">
 			</div>
             </form>
-                <button type="button" class="btn btn-primary" onclick="submit_data()">
+                <button type="button" class="btn btn-primary" onclick="submit_data()" data-toggle="modal" data-target="#myModal">
 					提交
 				</button>
 
-<div id="parent">
- <div id="son"></div>
+
+    <!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">提交执行计划</h4>
+      </div>
+      <div class="modal-body">
+        <div class="progress">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%"><span class="sr-only">0%</span>
+        </div>
+        </div>
+          <div id="in_modal">
+
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
 </div>
+
 {% endblock %}
 
 {% block script %}
@@ -53,8 +70,9 @@ function onprogress(evt){
 　　var loaded = evt.loaded;     //已经上传大小情况
  var tot = evt.total;      //附件总大小
  var per = Math.floor(100*loaded/tot);  //已经上传的百分比
-　　$("#son").html( per +"%" );
- $("#son").css("width" , per +"%");
+　　$(".progress-bar").css('width',per+"%")
+    $(".progress-bar").text(per)
+
 }
 
 function submit_data() {
@@ -63,6 +81,8 @@ function submit_data() {
     form_data.append('project_conf', $('#id_project_conf')[0].files[0]);
     form_data.append('project_package', $('#id_project_package')[0].files[0]);
     form_data.append('comments', $('#id_comments').val());
+    $(".progress-bar").css('width',"0%")
+    $(".progress-bar").text(0)
             $.ajax({
                 type:"post",
                 url: "{{ request.path }}",
@@ -78,10 +98,12 @@ function submit_data() {
 　　　　　　　　return xhr;}
 　　　　        },
                 success:function (arg) {
-                    alert(arg)
+                    $("#in_modal").empty()
+                    $("#in_modal").append(arg)
             }
     });
 }
+
 
 </script>
 {% endblock %}

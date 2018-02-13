@@ -72,7 +72,7 @@ class PyScriptBaseInfoV2(models.Model):
                     (2, '其他'))
 
     sid = models.AutoField(primary_key=True)
-    name = models.CharField(verbose_name='名称', max_length=50)
+    name = models.CharField(verbose_name='名称', max_length=500)
     program_type = models.IntegerField(verbose_name='程序类型', choices=program_type)
     version = models.DateField(blank=True, null=True)
     run_type = models.SmallIntegerField(choices=run_type, default=0)
