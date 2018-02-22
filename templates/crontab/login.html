@@ -25,8 +25,8 @@
   <body>
 
     <div class="container" >
-        {% csrf_token %}
       <form class="form-signin" action="" method="post">
+          {% csrf_token %}
         <h2 class="form-signin-heading">Please sign in</h2>
         <label for="inputUsername" class="sr-only">Email address</label>
         <input type="text" id="inputUsername" class="form-control"
